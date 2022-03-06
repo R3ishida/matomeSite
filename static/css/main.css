@@ -5,6 +5,56 @@ body {
 
 }
 
+.pop {
+    width: 40vw;
+    height: 25vw;
+    position: fixed;
+    top: 30vh;
+    left: 30vw;
+    background-color: aliceblue;
+    z-index: 100;
+    display: none;
+}
+
+form {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    width: 100%;
+}
+
+#get_image {
+    width: 90%;
+    height: 30px;
+    margin-bottom: 10px;
+}
+
+li {
+    width: 100%;
+    font-weight: bold;
+}
+
+#title {
+    width: 90%;
+    height: 30px;
+    background-color: white;
+    margin-bottom: 20px;
+}
+
+#memo {
+    width: 90%;
+    height: 100px;
+    background-color: white;
+    margin-bottom: 30px;
+}
+
+#button {
+    height: 60px;
+    width: 100px;
+    background-color: rgb(201, 201, 201);
+}
+
+
 .grid {
     position: relative;
     margin-top: 0;
@@ -39,6 +89,16 @@ img {
     object-fit: cover;
 }
 
+.add {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(179, 179, 179);
+}
+
+.add:hover {
+    cursor: pointer;
+}
+
 img:hover {
     cursor: pointer;
 }
@@ -60,5 +120,9 @@ img:hover {
 .button p {
     position: absolute;
     bottom: 20px;
+    opacity: 0;
+}
+
+.add_number {
     opacity: 0;
 }

@@ -1,12 +1,107 @@
-from flask import Flask
-from flask import render_template
+from crypt import methods
+from email.policy import default
+import os
+from flask import Flask, flash, request, redirect, url_for, render_template
+from werkzeug.utils import secure_filename
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import *
+from sqlalchemy.sql import func
+import sqlite3
+
+
+UPLOAD_FOLDER = './static/image/'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'heic'}
 
 app = Flask(__name__, static_folder='static/')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['SECRET_KEY'] = 'secret key'
 
-@app.route("/")
-def hello_world():
-    return render_template("index.html")
+# db作成
 
+"""
+cur.execute(
+    'CREATE TABLE photos(id INTEGER PRIMARY KEY, user_id INTEGER, genre TEXT, genre_num INTEGER, file_path TEXT, title TEXT, memo TEXT);'
+)
+"""
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            conn = sqlite3.connect('photo.db')
+            cur = conn.cursor()
+            cur.execute(
+                'select max(id) from photos'
+            )
+            number_list = cur.fetchone()
+            photo_id = number_list[0] + 1
+            new_filename = f"image{photo_id}." + file.filename.rsplit('.', 1)[1]
+
+            filename = secure_filename(new_filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            print(file_path)
+            file.save(file_path)
+
+            genre = "建築"
+            genre_num = request.form.get('genre_num')
+            title = request.form.get('title')
+            memo = request.form.get('memo')
+            print("------------------------")
+            print(request.form.get('genre_num'))
+            user_id = 1
+            sql_str = f'insert into photos values({photo_id}, {user_id}, "{genre}", {genre_num}, "{filename}", "{title}", "{memo}")'
+            cur.execute(sql_str)
+            conn.commit()
+           
+            cur.execute(
+                "select * from photos"
+            )
+            
+            for row in cur:
+                print(row)
+    
+            return redirect('/')
+    else:  #getリクエストの時
+        conn = sqlite3.connect('photo.db')
+        cur = conn.cursor()
+        cur.execute(
+            'select max(genre_num) from photos'
+        )
+        genre_list = cur.fetchone()
+        genre_id = genre_list[0]
+        photo_list = []
+        for i in range(genre_id):
+            sql_str = f'select * from photos where genre_num = {genre_id}'
+            cur.execute(sql_str)
+            photo_sublist = cur.fetchall()
+            gridname = "grid"+str(i)
+            for j in range(len(photo_sublist)):
+                photo_sublist[j] = list(photo_sublist[j])
+                link = f"static/image/{photo_sublist[j][4]}"
+                print(type(photo_sublist[j]))
+                photo_sublist[j].insert(0, gridname)
+                photo_sublist[j].append(link)
+            photo_list.append(photo_sublist)
+        print(photo_list)
+            
+        
+        return render_template("index.html", genres = photo_list)
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -14,18 +14,49 @@
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&family=Rubik&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
 </head>
-
 <body>
-    <div class="muuriArea"></div>
+    <div class="pop">
+        <form method="POST" enctype=multipart/form-data>
+            <ul>
+                <li><input id="get_image" type="file" name="file" accept=".png, .jpg, .jpeg, .pdf, .doc, .heic" required></li>
+                <li><input id="title" type="text" name="title" placeholder="タイトル"></li>
+                <li><input id="memo" type="text" name="memo" placeholder="メモ"></li>
+                <li><button id="button" type="submit" value="Upload">送信</button></li>
+            </ul>
+        </form>
+    </div>
+    <div class="muuriArea">
+    {% for genre in genres %}
+        <div class="button">
+            <p>{{ genre[0][3] }}</p>
+        </div>
+        <div class="grid muuri" id={{ genre[0][0] }}>
+            {% for photo in genre %}
+            <div class="item">
+                <div class="item-content">
+                    <img src={{ photo[8] }}>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="item">
+                <div class="item-content">
+                    <div class="add">＋</div>
+                    <p class="add_number">{{ genre[0][4] }}</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+<!--
     <script>
         element = document.getElementsByClassName("muuriArea")[0]
-        html_code  = ""
-        for(var i = 0; i < 3; i++) {
+        html_code = ""
+        for (var i = 0; i < 3; i++) {
             html_code += `<div class="button">
                 <p>タイトル</p>
             </div>
-            <div class="grid muuri grid${i}">`
-            for(var j=0; j<10; j++) {
+            <div class="grid muuri grid${i}" id="${i}">`
+            for (var j = 0; j < 10; j++) {
                 num = j % 6
                 console.log(num)
                 img_code = [
@@ -40,13 +71,16 @@
                     ${img_code[num]}
                 </div></div>`
             }
+            html_code += `<div class="item"><div class="item-content">
+                <div class="add">＋</div>
+                </div></div>`
             html_code += `</div>`
         }
         element.innerHTML = html_code
         console.log(html_code)
         console.log(element)
     </script>
-
+-->
 
 </body>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
@@ -55,12 +89,13 @@
     integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
 
 
+
 <script src="{{ url_for('static', filename='js/move.js') }}"></script>
 <script>
     function makeList(n) {
         list = []
-        for(var i = 0; i<n; i++) {
-            list.push(".grid"+i)
+        for (var i = 0; i < n; i++) {
+            list.push("#grid" + i)
         }
         console.log(list)
         return list

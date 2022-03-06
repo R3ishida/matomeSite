@@ -18,3 +18,18 @@ $('.button').on('click', function() {//タイトル要素をクリックした�
         $(findElm).slideToggle();//アコーディオンの上下動作
     }
 });
+
+$('.add').on('click', function() {
+    $('.pop').css("display", "table")
+    genre_num = document.getElementsByClassName("add_number")[0].textContent
+    console.log("------------------------")
+    console.log(genre_num)
+    formElement = document.getElementsByTagName("ul")[0]
+    console.log(formElement)
+    addform = `<li><input type="hidden" name="genre_num" value="${genre_num}"></li>`
+    formElement.insertAdjacentHTML('beforeend', addform)
+})
+
+$('button').on('click', function() {
+    $('.pop').css("display", "none")
+})
