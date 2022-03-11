@@ -1,6 +1,7 @@
 from crypt import methods
 from email.policy import default
 import os
+from re import S
 from flask import Flask, flash, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
@@ -90,7 +91,7 @@ def upload_file():
             sql_str = f'select * from photos where genre_num = {genre_id}'
             cur.execute(sql_str)
             photo_sublist = cur.fetchall()
-            gridname = "grid"+str(i)
+            gridname = "grid"+str(i+1)
             for j in range(len(photo_sublist)):
                 photo_sublist[j] = list(photo_sublist[j])
                 link = f"static/image/{photo_sublist[j][4]}"
@@ -102,6 +103,24 @@ def upload_file():
             
         
         return render_template("index.html", genres = photo_list)
+
+@app.route('/delete', methods=['GET', 'POST'])
+def delete_data():
+    print("unko!!!!!!!!")
+    photo_id = request.form.get('photo_id')
+    print(photo_id)
+    print("---------------------------------")
+    conn = sqlite3.connect('photo.db')
+    cur = conn.cursor()
+    sql_str = f'select file_path from photos where id = { photo_id }'
+    cur.execute(sql_str)
+    filename = cur.fetchone()[0]
+    sql_str = f'delete from photos where id = { photo_id }'
+    cur.execute(sql_str)
+    conn.commit()
+    new_filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    os.remove(new_filename)
+    return redirect('/')
 
 if __name__ == "__main__":
     app.run(debug=True)

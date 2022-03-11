@@ -13,9 +13,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&family=Rubik&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100&display=swap" rel="stylesheet">
 </head>
+
 <body>
-    <div class="pop">
+    <div class="pop photo_pop">
         <form method="POST" enctype=multipart/form-data>
             <ul>
                 <li><input id="get_image" type="file" name="file" accept=".png, .jpg, .jpeg, .pdf, .doc, .heic" required></li>
@@ -25,17 +28,26 @@
             </ul>
         </form>
     </div>
+    <div class="pop genre_pop">
+        <form method="POST" enctype=multipart/form-data>
+            <ul>
+                <li><input id="title" type="text" name="genre" placeholder="グループ名"></li>
+                <li><button id="button" type="submit" value="Upload">送信</button></li>
+            </ul>
+        </form>
+    </div>
     <div class="muuriArea">
-    {% for genre in genres %}
+        {% for genre in genres %}
         <div class="button">
             <p>{{ genre[0][3] }}</p>
         </div>
-        <div class="grid muuri" id={{ genre[0][0] }}>
+        <div class="grid muuri" id="{{ genre[0][0] }}">
             {% for photo in genre %}
-            <div class="item">
+            <div class="item photo_item">
                 <div class="item-content">
                     <img src={{ photo[8] }}>
                     <div class="info">
+                        <p class="photo_id">{{ photo[1] }}</p>
                         <p class="title">{{ photo[6] }}</p>
                         <p class="memo">{{ photo[7] }}</p>
                         <p class="file_path">{{ photo[8] }}</p>
@@ -43,7 +55,7 @@
                 </div>
             </div>
             {% endfor %}
-            <div class="item">
+            <div class="item ">
                 <div class="item-content">
                     <div class="add">＋</div>
                     <div class="info">
@@ -52,13 +64,15 @@
                 </div>
             </div>
         </div>
-    {% endfor %}
+        {% endfor %}
+        <div class="genre_button">
+            <p>＋</p>
+        </div>
 
     </div>
     <div class="photo_page">
         <div class="close">×</div>
         <div class="photo_container">
-            
         </div>
     </div>
 
@@ -72,133 +86,132 @@
 
 <script src="{{ url_for('static', filename='js/move.js') }}"></script>
 <script>
-    function makeList(n) {
-        list = []
-        for (var i = 0; i < n; i++) {
-            list.push("#grid" + i)
-        }
-        console.log(list)
-        return list
-    }
-    function makeNewMuuri(list) {
-        for (var number = 0; number < list.length; number++) {
-            var grid = new Muuri(list[number], {
-                dragEnabled: true,
-                layout: function (grid, layoutId, items, width, height, callback) {
+    function makeNewMuuri(grid_name) {
+        var grid = new Muuri(grid_name, {
+            dragEnabled: true,
+            layout: function (grid, layoutId, items, width, height, callback) {
 
-                    var layout = {
-                        id: layoutId,
-                        items: items,
-                        slots: [],
-                        styles: {},
-                    };
+                var layout = {
+                    id: layoutId,
+                    items: items,
+                    slots: [],
+                    styles: {},
+                };
 
-                    var item;
-                    var m;
-                    var x = 0;
-                    var y = 0;
-                    var w = 0;
-                    var h = 0;
+                var item;
+                var m;
+                var x = 0;
+                var y = 0;
+                var w = 0;
+                var h = 0;
 
-                    var maxW = width / 2;
-                    var currentW = 0;
-                    var currentRowH = 0;
-                    var currentRowW = 0;
-                    var rowSizes = [];
-                    var rowFixes = [];
+                var maxW = width / 2;
+                var currentW = 0;
+                var currentRowH = 0;
+                var currentRowW = 0;
+                var rowSizes = [];
+                var rowFixes = [];
 
-                    var xPre, yPre, wPre, hPre;
-                    var numToFix = 0;
+                var xPre, yPre, wPre, hPre;
+                var numToFix = 0;
 
-                    for (var i = 0; i < items.length; i++) {
-                        item = items[i];
+                for (var i = 0; i < items.length; i++) {
+                    item = items[i];
 
-                        m = item.getMargin();
-                        wPre = item.getWidth() + m.left + m.right;
-                        hPre = item.getHeight() + m.top + m.bottom;
-                        xPre += wPre;
+                    m = item.getMargin();
+                    wPre = item.getWidth() + m.left + m.right;
+                    hPre = item.getHeight() + m.top + m.bottom;
+                    xPre += wPre;
 
-                        if (hPre > currentRowH) {
-                            currentRowH = hPre;
-                        }
-
-                        if (w < currentRowW) {
-                            currentRowW = wPre;
-                        }
-
-                        rowSizes.push(width / 2);
-                        numToFix++;
-                        currentW += wPre;
-
-                        var k = 0;
-
-                        for (var j = 0; j < numToFix; j++) {
-                            rowSizes[i - j] -= wPre / 2;
-                        }
-
-                        if (numToFix > 1) {
-                            rowSizes[i] -= (wPre / 2) * (numToFix - 1);
-                            k += (wPre / 2);
-                        }
-
-                        currentW -= k;
-                        rowFixes.push(k);
-
-                        if (currentW >= maxW) {
-                            yPre += currentRowH;
-                            currentRowH = 0;
-                            xPre = 0;
-                            numToFix -= 1;
-                            currentW = 0;
-                            numToFix = 0;
-                            k = 0;
-                        }
+                    if (hPre > currentRowH) {
+                        currentRowH = hPre;
                     }
 
-                    maxW = width / 2;
-                    currentW = 0;
-                    currentRowH = 0;
-                    currentRowW = 0;
-
-                    for (var i = 0; i < items.length; i++) {
-                        item = items[i];
-                        x += w;
-
-                        if (h > currentRowH) {
-                            currentRowH = h;
-                        }
-
-                        if (w < currentRowW) {
-                            currentRowW = w;
-                        }
-
-                        currentW += w - rowFixes[i];
-
-                        if (currentW >= maxW) {
-                            y += currentRowH;
-                            currentRowH = 0;
-                            x = 0;
-                            currentW = 0;
-                        }
-
-                        m = item.getMargin();
-                        w = item.getWidth() + m.left + m.right;
-                        h = item.getHeight() + m.top + m.bottom;
-                        layout.slots.push(x + rowSizes[0], y);
-                        console.log(x)
+                    if (w < currentRowW) {
+                        currentRowW = wPre;
                     }
 
-                    layout.styles.width = '100%';
-                    layout.styles.height = y + h + 1 + 'px';
+                    rowSizes.push(width / 2);
+                    numToFix++;
+                    currentW += wPre;
 
-                    callback(layout);
-                    console.log(layout)
-                    console.log(rowSizes)
+                    var k = 0;
+
+                    for (var j = 0; j < numToFix; j++) {
+                        rowSizes[i - j] -= wPre / 2;
+                    }
+
+                    if (numToFix > 1) {
+                        rowSizes[i] -= (wPre / 2) * (numToFix - 1);
+                        k += (wPre / 2);
+                    }
+
+                    currentW -= k;
+                    rowFixes.push(k);
+
+                    if (currentW >= maxW) {
+                        yPre += currentRowH;
+                        currentRowH = 0;
+                        xPre = 0;
+                        numToFix -= 1;
+                        currentW = 0;
+                        numToFix = 0;
+                        k = 0;
+                    }
                 }
-            });
+
+                maxW = width / 2;
+                currentW = 0;
+                currentRowH = 0;
+                currentRowW = 0;
+
+                for (var i = 0; i < items.length; i++) {
+                    item = items[i];
+                    x += w;
+
+                    if (h > currentRowH) {
+                        currentRowH = h;
+                    }
+
+                    if (w < currentRowW) {
+                        currentRowW = w;
+                    }
+
+                    currentW += w - rowFixes[i];
+
+                    if (currentW >= maxW) {
+                        y += currentRowH;
+                        currentRowH = 0;
+                        x = 0;
+                        currentW = 0;
+                    }
+
+                    m = item.getMargin();
+                    w = item.getWidth() + m.left + m.right;
+                    h = item.getHeight() + m.top + m.bottom;
+                    layout.slots.push(x + rowSizes[0], y);
+                    console.log(x)
+                }
+
+                layout.styles.width = '100%';
+                layout.styles.height = y + h + 1 + 'px';
+
+                callback(layout);
+                console.log(layout)
+                console.log(rowSizes)
+            }
+        });
+    }
+
+    function makeMuuris(n) {
+        for (var i = 1; i <= n; i++) {
+            str = "#grid" + i
+            makeNewMuuri(str)
         }
     }
-    makeNewMuuri(makeList(6))
+
+    makeMuuris(6)
+
 
 </script>
 

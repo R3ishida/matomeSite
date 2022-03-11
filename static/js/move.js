@@ -11,16 +11,16 @@ $('.button').on('click', function () {//タイトル要素をクリックした�
         $(findElm).slideToggle();//アコーディオンの上下動作
     } else {
         $(this).animate({
-            width: "400px",
-            height: "400px",
-            display: "inline-block",
+            width: "70%",
+            height: "80px",
+            display: "block",
         });
         $(findElm).slideToggle();//アコーディオンの上下動作
     }
 });
 
 $('.add').on('click', function () {
-    $('.pop').css("display", "table")
+    $('.photo_pop').css("display", "table")
     console.log("表示しました。")
     genre_num = $(this).siblings().children()[0].textContent
     console.log("------------------------")
@@ -31,22 +31,30 @@ $('.add').on('click', function () {
     formElement.insertAdjacentHTML('beforeend', addform)
 
     $(document).on('click', function(e) {
-        if (!$(e.target).closest('.pop').length && !$(e.target).closest('.add').length) {
-          $('.pop').fadeOut();
+        if (!$(e.target).closest('.photo_pop').length && !$(e.target).closest('.add').length) {
+          $('.photo_pop').fadeOut();
         }
     });
 })
 
-$('button').on('click', function () {
-    $('.pop').css("display", "none")
+$('.genre_button').on('click', function () {
+    $('.genre_pop').css("display", "table")
+
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.genre_pop').length && !$(e.target).closest('.genre_button').length) {
+          $('.genre_pop').fadeOut();
+        }
+    });
 })
 
 
-$('.item').on('click', function() {
+
+$('.photo_item').on('click', function() {
     $(".photo_page").css("display", "block")
-    title = $(this).children().children().children()[0].textContent
-    memo = $(this).children().children().children()[1].textContent
-    file_path = $(this).children().children().children()[2].textContent
+    id = $(this).children().children().children()[0].textContent
+    title = $(this).children().children().children()[1].textContent
+    memo = $(this).children().children().children()[2].textContent
+    file_path = $(this).children().children().children()[3].textContent
     photo_page = document.getElementsByClassName("photo_container")[0]
     html_code = `
     <div class="photo_holder">
@@ -54,6 +62,10 @@ $('.item').on('click', function() {
     </div>
     <div class="title">${title}</div>
     <div class="memo">${memo}</div>
+    <form action="/delete" method="POST" enctype=multipart/form-data>
+        <input type="hidden" name="photo_id" value="${id}">
+        <button id="delete_button" type="submit" value="id_submit">削除</button>
+    </form>
     `
     photo_page.innerHTML = html_code 
 })
