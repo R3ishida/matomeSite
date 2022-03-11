@@ -35,52 +35,32 @@
             <div class="item">
                 <div class="item-content">
                     <img src={{ photo[8] }}>
+                    <div class="info">
+                        <p class="title">{{ photo[6] }}</p>
+                        <p class="memo">{{ photo[7] }}</p>
+                        <p class="file_path">{{ photo[8] }}</p>
+                    </div>
                 </div>
             </div>
             {% endfor %}
             <div class="item">
                 <div class="item-content">
                     <div class="add">＋</div>
-                    <p class="add_number">{{ genre[0][4] }}</p>
+                    <div class="info">
+                        <p class="genre_num">{{ genre[0][4] }}</p>
+                    </div>
                 </div>
             </div>
         </div>
     {% endfor %}
+
     </div>
-<!--
-    <script>
-        element = document.getElementsByClassName("muuriArea")[0]
-        html_code = ""
-        for (var i = 0; i < 3; i++) {
-            html_code += `<div class="button">
-                <p>タイトル</p>
-            </div>
-            <div class="grid muuri grid${i}" id="${i}">`
-            for (var j = 0; j < 10; j++) {
-                num = j % 6
-                console.log(num)
-                img_code = [
-                    `<img src="{{ url_for('static', filename="image/image0.JPG") }}">`,
-                    `<img src="{{ url_for('static', filename="image/image1.JPG") }}">`,
-                    `<img src="{{ url_for('static', filename="image/image2.JPG") }}">`,
-                    `<img src="{{ url_for('static', filename="image/image3.JPG") }}">`,
-                    `<img src="{{ url_for('static', filename="image/image4.JPG") }}">`,
-                    `<img src="{{ url_for('static', filename="image/image5.JPG") }}">`,
-                ]
-                html_code += `<div class="item"><div class="item-content">
-                    ${img_code[num]}
-                </div></div>`
-            }
-            html_code += `<div class="item"><div class="item-content">
-                <div class="add">＋</div>
-                </div></div>`
-            html_code += `</div>`
-        }
-        element.innerHTML = html_code
-        console.log(html_code)
-        console.log(element)
-    </script>
--->
+    <div class="photo_page">
+        <div class="close">×</div>
+        <div class="photo_container">
+            
+        </div>
+    </div>
 
 </body>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
