@@ -133,6 +133,14 @@ img:hover {
     cursor: pointer;
 }
 
+.menu_text {
+    text-align: right;
+    position: absolute;
+    top: 0;
+    right: 40px;
+    z-index: 100;
+}
+
 .genre_button {
     position: relative;
     margin: 10px auto;
@@ -209,3 +217,4 @@ img:hover {
     background-color: gray;
     font-weight: bold;
 }
+

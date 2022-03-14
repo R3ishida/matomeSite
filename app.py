@@ -51,7 +51,10 @@ def upload_file():
                 'select max(id) from photos'
             )
             number_list = cur.fetchone()
-            photo_id = number_list[0] + 1
+            if number_list[0] is None:
+                photo_id = 1
+            else:
+                photo_id = number_list[0] + 1
             new_filename = f"image{photo_id}." + file.filename.rsplit('.', 1)[1]
 
             filename = secure_filename(new_filename)
@@ -109,7 +112,7 @@ def upload_file():
         
         return render_template("index.html", genres = photo_list, genre_list = genre_list, genre_id = genre_id)
 
-@app.route('/delete', methods=['GET', 'POST'])
+@app.route('/delete_photo', methods=['GET', 'POST'])
 def delete_data():
     print("unko!!!!!!!!")
     photo_id = request.form.get('photo_id')
@@ -126,6 +129,43 @@ def delete_data():
     new_filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     os.remove(new_filename)
     return redirect('/')
+
+@app.route('/add_genre', methods=['GET', 'POST'])
+def add_genre():
+    genre = request.form.get('genre')
+    conn = sqlite3.connect('photo.db')
+    cur = conn.cursor()
+    sql_str = f'select max(genre_num) from genre'
+    cur.execute(sql_str)
+    genre_num = cur.fetchone()[0]
+    if genre_num != None:
+        print("noneではない")
+        genre_num += 1
+    else:
+        print("none")
+        genre_num = 1
+    print(genre_num, genre)
+    sql_str = f'insert into genre values ({ genre_num }, "{ genre }")'
+    cur.execute(sql_str)
+    conn.commit()
+    return redirect('/')
+
+@app.route('/delete_genre', methods=['GET', 'POST'])
+def delete_genre():
+    genre = request.form.get('genre')
+    conn = sqlite3.connect('photo.db')
+    cur = conn.cursor()
+    sql_str = f'delete from genre where genre = "{ genre }"'
+    cur.execute(sql_str)
+    conn.commit()
+    sql_str = f'delete from photos where genre = "{ genre }"'
+    cur.execute(sql_str)
+    conn.commit()
+    return redirect('/')
+
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

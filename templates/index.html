@@ -29,17 +29,20 @@
         </form>
     </div>
     <div class="pop genre_pop">
-        <form method="POST" enctype=multipart/form-data>
+        <form action="/add_genre" method="POST" enctype=multipart/form-data>
             <ul>
                 <li><input id="title" type="text" name="genre" placeholder="グループ名"></li>
                 <li><button id="button" type="submit" value="Upload">送信</button></li>
             </ul>
         </form>
     </div>
+    <div class="pop delete_genre">
+    </div>
     <div class="muuriArea">
         {% for i in range(genre_id) %}
         <div class="button">
             <p>{{ genre_list[i][1] }}</p>
+            <p class="menu_text">…</p>
         </div>
         <div class="grid muuri" id="grid{{ genre_list[i][0] }}">
             {% if genres[i] != [] %}
@@ -78,6 +81,7 @@
         <div class="photo_container">
         </div>
     </div>
+    
 
 </body>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
@@ -206,15 +210,14 @@
         });
     }
 
-    function makeMuuris(n) {
-        for (var i = 1; i <= n; i++) {
-            str = "#grid"+i
-            console.log(str)
-            makeNewMuuri(str)
-        }
+    grid_list = document.getElementsByClassName('muuri')
+
+    for (var i = 0; i < grid_list.length; i++) {
+        muuri_name = "#"+grid_list[i].id
+        makeNewMuuri(muuri_name)
+        console.log("manko")
     }
 
-    makeMuuris(6)
     console.log("成功")
 
 </script>
