@@ -82,13 +82,18 @@ def upload_file():
         conn = sqlite3.connect('photo.db')
         cur = conn.cursor()
         cur.execute(
-            'select max(genre_num) from photos'
+            'select * from genre'
         )
-        genre_list = cur.fetchone()
-        genre_id = genre_list[0]
+        genre_list = cur.fetchall()
+        print(genre_list)
+        genre_id = len(genre_list)
+        print(genre_id)
+        print("---------------------------")
         photo_list = []
         for i in range(genre_id):
-            sql_str = f'select * from photos where genre_num = {genre_id}'
+            n = i+1
+            print(n)
+            sql_str = f'select * from photos where genre_num = {n}'
             cur.execute(sql_str)
             photo_sublist = cur.fetchall()
             gridname = "grid"+str(i+1)
@@ -102,7 +107,7 @@ def upload_file():
         print(photo_list)
             
         
-        return render_template("index.html", genres = photo_list)
+        return render_template("index.html", genres = photo_list, genre_list = genre_list, genre_id = genre_id)
 
 @app.route('/delete', methods=['GET', 'POST'])
 def delete_data():

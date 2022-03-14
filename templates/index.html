@@ -37,32 +37,35 @@
         </form>
     </div>
     <div class="muuriArea">
-        {% for genre in genres %}
+        {% for i in range(genre_id) %}
         <div class="button">
-            <p>{{ genre[0][3] }}</p>
+            <p>{{ genre_list[i][1] }}</p>
         </div>
-        <div class="grid muuri" id="{{ genre[0][0] }}">
-            {% for photo in genre %}
-            <div class="item photo_item">
-                <div class="item-content">
-                    <img src={{ photo[8] }}>
-                    <div class="info">
-                        <p class="photo_id">{{ photo[1] }}</p>
-                        <p class="title">{{ photo[6] }}</p>
-                        <p class="memo">{{ photo[7] }}</p>
-                        <p class="file_path">{{ photo[8] }}</p>
+        <div class="grid muuri" id="grid{{ genre_list[i][0] }}">
+            {% if genres[i] != [] %}
+                {% for photo in genres[i] %}
+                <div class="item photo_item">
+                    <div class="item-content">
+                        <img src={{ photo[8] }}>
+                        <div class="info">
+                            <p class="photo_id">{{ photo[1] }}</p>
+                            <p class="title">{{ photo[6] }}</p>
+                            <p class="memo">{{ photo[7] }}</p>
+                            <p class="file_path">{{ photo[8] }}</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            {% endfor %}
+                {% endfor %}
+            {% endif %}
             <div class="item ">
                 <div class="item-content">
                     <div class="add">＋</div>
                     <div class="info">
-                        <p class="genre_num">{{ genre[0][4] }}</p>
+                        <p class="genre_num">{{ genre_list[i][0] }}</p>
                     </div>
                 </div>
             </div>
+            
         </div>
         {% endfor %}
         <div class="genre_button">
@@ -205,13 +208,14 @@
 
     function makeMuuris(n) {
         for (var i = 1; i <= n; i++) {
-            str = "#grid" + i
+            str = "#grid"+i
+            console.log(str)
             makeNewMuuri(str)
         }
     }
 
     makeMuuris(6)
-
+    console.log("成功")
 
 </script>
 
