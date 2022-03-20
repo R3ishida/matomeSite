@@ -4,20 +4,21 @@
 property = 0
 $('.button').on('click', function () {//タイトル要素をクリックしたら
     var findElm = $(this).next(".grid");//直後のアコーディオンを行うエリアを取得し
+    console.log(findElm)
     if ($(findElm).css("display") == "none") {
-        $(this).animate({
-            width: "100%",
-            height: "80px",
-            borderRadius: "0",
-        });
-        $(findElm).slideToggle();//アコーディオンの上下動作
+        // $(this).animate({
+        //     width: "100%",
+        //     height: "80px",
+        //     borderRadius: "0",
+        // });
+        $(findElm).slideToggle(600);//アコーディオンの上下動作
     } else {
-        $(this).animate({
-            width: "70%",
-            height: "80px",
-            display: "block",
-        });
-        $(findElm).slideToggle();//アコーディオンの上下動作
+        // $(this).animate({
+        //     width: "70%",
+        //     height: "80px",
+        //     display: "block",
+        // });
+        $(findElm).slideToggle(600);//アコーディオンの上下動作
     }
 });
 

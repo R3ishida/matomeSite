@@ -15,7 +15,6 @@ for i in range(genre_id):
     sql_str = f'select * from photos where genre_num = {genre_id}'
     cur.execute(sql_str)
     photo_list = cur.fetchall()
-    print(photo_list)
     
 
 

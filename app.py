@@ -59,15 +59,12 @@ def upload_file():
 
             filename = secure_filename(new_filename)
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            print(file_path)
             file.save(file_path)
 
             genre = "建築"
             genre_num = request.form.get('genre_num')
             title = request.form.get('title')
             memo = request.form.get('memo')
-            print("------------------------")
-            print(request.form.get('genre_num'))
             user_id = 1
             sql_str = f'insert into photos values({photo_id}, {user_id}, "{genre}", {genre_num}, "{filename}", "{title}", "{memo}")'
             cur.execute(sql_str)
@@ -76,9 +73,6 @@ def upload_file():
             cur.execute(
                 "select * from photos"
             )
-            
-            for row in cur:
-                print(row)
     
             return redirect('/')
     else:  #getリクエストの時
@@ -88,14 +82,10 @@ def upload_file():
             'select * from genre'
         )
         genre_list = cur.fetchall()
-        print(genre_list)
         genre_id = len(genre_list)
-        print(genre_id)
-        print("---------------------------")
         photo_list = []
         for i in range(genre_id):
             n = i+1
-            print(n)
             sql_str = f'select * from photos where genre_num = {n}'
             cur.execute(sql_str)
             photo_sublist = cur.fetchall()
@@ -103,21 +93,16 @@ def upload_file():
             for j in range(len(photo_sublist)):
                 photo_sublist[j] = list(photo_sublist[j])
                 link = f"static/image/{photo_sublist[j][4]}"
-                print(type(photo_sublist[j]))
                 photo_sublist[j].insert(0, gridname)
                 photo_sublist[j].append(link)
             photo_list.append(photo_sublist)
-        print(photo_list)
             
         
         return render_template("index.html", genres = photo_list, genre_list = genre_list, genre_id = genre_id)
 
 @app.route('/delete_photo', methods=['GET', 'POST'])
 def delete_data():
-    print("unko!!!!!!!!")
     photo_id = request.form.get('photo_id')
-    print(photo_id)
-    print("---------------------------------")
     conn = sqlite3.connect('photo.db')
     cur = conn.cursor()
     sql_str = f'select file_path from photos where id = { photo_id }'
@@ -139,12 +124,9 @@ def add_genre():
     cur.execute(sql_str)
     genre_num = cur.fetchone()[0]
     if genre_num != None:
-        print("noneではない")
         genre_num += 1
     else:
-        print("none")
         genre_num = 1
-    print(genre_num, genre)
     sql_str = f'insert into genre values ({ genre_num }, "{ genre }")'
     cur.execute(sql_str)
     conn.commit()
@@ -158,6 +140,7 @@ def delete_genre():
     sql_str = f'delete from genre where genre = "{ genre }"'
     cur.execute(sql_str)
     conn.commit()
+    cur = conn.cursor()
     sql_str = f'delete from photos where genre = "{ genre }"'
     cur.execute(sql_str)
     conn.commit()
