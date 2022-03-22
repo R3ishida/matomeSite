@@ -61,18 +61,20 @@ def upload_file():
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(file_path)
 
-            genre = "建築"
+            #genre = 
             genre_num = request.form.get('genre_num')
             title = request.form.get('title')
             memo = request.form.get('memo')
-            user_id = 1
-            sql_str = f'insert into photos values({photo_id}, {user_id}, "{genre}", {genre_num}, "{filename}", "{title}", "{memo}")'
-            cur.execute(sql_str)
-            conn.commit()
-           
             cur.execute(
-                "select * from photos"
+                f'select genre from genre where genre_num = {genre_num}'
             )
+            genre = cur.fetchone()[0]
+
+            user_id = 1
+            cur.execute(
+                f'insert into photos values({photo_id}, {user_id}, "{genre}", {genre_num}, "{filename}", "{title}", "{memo}")'
+            )
+            conn.commit()
     
             return redirect('/')
     else:  #getリクエストの時
@@ -86,8 +88,9 @@ def upload_file():
         photo_list = []
         for i in range(genre_id):
             n = i+1
-            sql_str = f'select * from photos where genre_num = {n}'
-            cur.execute(sql_str)
+            cur.execute(
+                f'select * from photos where genre_num = {n}'
+            )
             photo_sublist = cur.fetchall()
             gridname = "grid"+str(i+1)
             for j in range(len(photo_sublist)):
@@ -105,11 +108,13 @@ def delete_data():
     photo_id = request.form.get('photo_id')
     conn = sqlite3.connect('photo.db')
     cur = conn.cursor()
-    sql_str = f'select file_path from photos where id = { photo_id }'
-    cur.execute(sql_str)
+    cur.execute(
+        f'select file_path from photos where id = { photo_id }'
+    )
     filename = cur.fetchone()[0]
-    sql_str = f'delete from photos where id = { photo_id }'
-    cur.execute(sql_str)
+    cur.execute(
+        f'delete from photos where id = { photo_id }'
+    )
     conn.commit()
     new_filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     os.remove(new_filename)
@@ -118,17 +123,20 @@ def delete_data():
 @app.route('/add_genre', methods=['GET', 'POST'])
 def add_genre():
     genre = request.form.get('genre')
+    print(genre)
     conn = sqlite3.connect('photo.db')
     cur = conn.cursor()
-    sql_str = f'select max(genre_num) from genre'
-    cur.execute(sql_str)
+    cur.execute(
+        f'select max(genre_num) from genre'
+    )
     genre_num = cur.fetchone()[0]
     if genre_num != None:
         genre_num += 1
     else:
         genre_num = 1
-    sql_str = f'insert into genre values ({ genre_num }, "{ genre }")'
-    cur.execute(sql_str)
+    cur.execute(
+        f'insert into genre values ({ genre_num }, "{ genre }")'
+    )
     conn.commit()
     return redirect('/')
 
@@ -137,12 +145,14 @@ def delete_genre():
     genre = request.form.get('genre')
     conn = sqlite3.connect('photo.db')
     cur = conn.cursor()
-    sql_str = f'delete from genre where genre = "{ genre }"'
-    cur.execute(sql_str)
+    cur.execute(
+        f'delete from genre where genre = "{ genre }"'
+    )
     conn.commit()
     cur = conn.cursor()
-    sql_str = f'delete from photos where genre = "{ genre }"'
-    cur.execute(sql_str)
+    cur.execute(
+        f'delete from photos where genre = "{ genre }"'
+    )
     conn.commit()
     return redirect('/')
 

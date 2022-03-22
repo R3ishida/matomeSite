@@ -1,23 +1,21 @@
 //アコーディオンをクリックした時の動作
-
-
 property = 0
 $('.button').on('click', function () {//タイトル要素をクリックしたら
     var findElm = $(this).next(".grid");//直後のアコーディオンを行うエリアを取得し
     console.log(findElm)
     if ($(findElm).css("display") == "none") {
-        // $(this).animate({
-        //     width: "100%",
-        //     height: "80px",
-        //     borderRadius: "0",
-        // });
+        $(this).animate({
+            width: "100%",
+            height: "100px",
+            borderRadius: "0",
+        });
         $(findElm).slideToggle(600);//アコーディオンの上下動作
     } else {
-        // $(this).animate({
-        //     width: "70%",
-        //     height: "80px",
-        //     display: "block",
-        // });
+        $(this).animate({
+             width: "85%",
+             height: "100px",
+             display: "block",
+        });
         $(findElm).slideToggle(600);//アコーディオンの上下動作
     }
 });
@@ -68,6 +66,7 @@ $('.photo_item').on('click', function() {
         <input type="hidden" name="photo_id" value="${id}">
         <button id="delete_button" type="submit" value="id_submit">削除</button>
     </form>
+    <div class="edit_button">編集</div>
     `
     photo_page.innerHTML = html_code 
 })

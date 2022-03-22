@@ -5,6 +5,19 @@ body {
 
 }
 
+header {
+    width: 100vw;
+    height: 15vw;
+}
+
+header p {
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 15vw;
+    color: gray;
+}
+
+
 .pop {
     width: 50vw;
     height: 35vw;
@@ -121,6 +134,10 @@ img:hover {
     display: block;
 }
 
+.genre_button {
+    width: 85%;
+}
+
 .genre_button p, .button p {
     line-height: 100px;
     font-size: 30px;
@@ -203,6 +220,7 @@ img:hover {
 }
 
 #delete_button {
+    line-height: 2vw;
     width: 4vw;
     height: 2vw;
     position: absolute;
@@ -214,3 +232,15 @@ img:hover {
     font-family: 'Noto Sans JP', sans-serif;
 }
 
+.edit_button {
+    line-height: 2vw;
+    width: 4vw;
+    height: 2vw;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    color: gray;
+    background-color: rgb(202, 201, 201);
+    font-weight: 100;
+    font-family: 'Noto Sans JP', sans-serif;
+}
